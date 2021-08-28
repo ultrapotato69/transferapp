@@ -1,0 +1,52 @@
+
+###
+GET http://localhost:8080/account
+
+###
+
+GET http://localhost:8080/account/1
+
+###
+
+POST http://localhost:8080/account
+Content-Type: application/json
+
+{
+  "id": null,
+  "client_name": "Mikhail Lermontov",
+  "balance": 900
+}
+
+###
+
+
+PUT http://localhost:8080/account
+Content-Type: application/json
+
+{
+  "id": 4,
+  "client_name": "Alexander Griboyedov",
+  "balance": 800
+}
+
+###
+
+DELETE http://localhost:8080/account/5
+
+###
+
+POST http://localhost:8080/transfer
+Content-Type: application/json
+
+{
+  "id": null,
+  "from_account_id": 2,
+  "to_account_id": 2,
+  "amount": 200,
+  "transfer_date": null
+}
+###
+
+GET http://localhost:8080/transfer/history/1
+
+
