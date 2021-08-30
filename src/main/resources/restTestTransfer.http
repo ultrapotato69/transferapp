@@ -1,14 +1,14 @@
 
 ###
-GET http://localhost:8080/account
+GET http://localhost:9000/account
 
 ###
 
-GET http://localhost:8080/account/1
+GET http://localhost:9000/account/1
 
 ###
 
-POST http://localhost:8080/account
+POST http://localhost:9000/account
 Content-Type: application/json
 
 {
@@ -20,33 +20,38 @@ Content-Type: application/json
 ###
 
 
-PUT http://localhost:8080/account
+PUT http://localhost:9000/account
 Content-Type: application/json
 
 {
-  "id": 4,
+  "id": 2,
   "client_name": "Alexander Griboyedov",
   "balance": 800
 }
 
 ###
 
-DELETE http://localhost:8080/account/5
+DELETE http://localhost:9000/account/5
 
 ###
 
-POST http://localhost:8080/transfer
+POST http://localhost:9000/transfer
 Content-Type: application/json
 
 {
   "id": null,
-  "from_account_id": 2,
+  "from_account_id": 1,
   "to_account_id": 2,
   "amount": 200,
+  "comment": "prosto tak",
   "transfer_date": null
 }
 ###
 
-GET http://localhost:8080/transfer/history/1
+###
+GET http://localhost:9000/transfer/history/1
+
+
+
 
 

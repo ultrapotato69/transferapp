@@ -7,12 +7,6 @@ export async function getJsonFromAddress(url) {
     }
 }
 
-export function clearElement(elem) {
-    while (elem.firstChild) {
-        elem.removeChild(elem.lastChild)
-    }
-}
-
 export async function postJson(object, url) {
     let response = await fetch(url, {
         method: 'POST',

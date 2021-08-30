@@ -5,7 +5,7 @@ import com.example.transferjdbc.service.TransferService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.concurrent.TimeUnit;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("transfer")
@@ -20,11 +20,11 @@ public class TransferController {
 
     @PostMapping
     public Transfer doTransfer(@RequestBody Transfer transfer) {
-        final long then = System.nanoTime();
-        Transfer doingTransfer = transferService.transferMoney(transfer);
-        final long nanos = TimeUnit.NANOSECONDS.toNanos(System.nanoTime() - then);
-        System.out.println("Transfer is: " + nanos);
-        return doingTransfer;
+        if (!transfer.getFrom_account_id().equals(transfer.getTo_account_id())
+                && transfer.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+            return transferService.transferMoney(transfer);
+        }
+        return null;
     }
 
     @GetMapping("history/{clientId}")

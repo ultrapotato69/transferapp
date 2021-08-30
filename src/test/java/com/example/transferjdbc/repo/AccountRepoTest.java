@@ -18,12 +18,11 @@ public class AccountRepoTest {
     @Autowired
     AccountRepo accountRepo;
 
-
-
     @Test
     public void saveTest() {
-        Long id = accountRepo.create("Alexander Pushkin", new BigDecimal(900));
-        Assert.assertNotNull(id);
+        Account account = accountRepo.save(
+                new Account(null, "Alexander Pushkin", new BigDecimal(900)));
+        Assert.assertNotNull(account);
     }
 
     @Test
