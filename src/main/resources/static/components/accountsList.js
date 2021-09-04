@@ -1,5 +1,5 @@
-import {main} from "../mainPage.js";
-import {getAccount} from "../accountPage.js";
+import {main} from "../pages/mainPage.js";
+import {getAccount} from "../pages/accountPage.js";
 
 export function createList(array) {
     const table = document.createElement('table')
@@ -33,14 +33,13 @@ function getHeadTable(array) {
 function getBodyTable(array) {
     const tbody = document.createElement('tbody')
     for (let i = 0; i < array.length; i++) {
-        let tr = document.createElement('tr')
+        const tr = document.createElement('tr')
         for (let key in array[i]) {
             if (key !== 'id') {
                 let td = document.createElement('td')
                 if (key === 'client_name') {
-                    let linkButton = document.createElement('button')
-                    linkButton.classList.add('btn')
-                    linkButton.classList.add('btn-outline-primary')
+                    const linkButton = document.createElement('button')
+                    linkButton.classList.add('btn', 'btn-outline-primary')
                     linkButton.onclick = getAccount(array[i]['id'], array)
                     linkButton.innerText = array[i][key]
                     td.append(linkButton)

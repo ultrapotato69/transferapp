@@ -1,13 +1,11 @@
 import {getJsonFromAddress, postJson} from "../util/ajax.js";
-import {printFirstPage} from "../mainPage.js";
-
+import {printFirstPage} from "../pages/mainPage.js";
 
 
 export async function getTransferForm(thisId) {
-    let result = await getJsonFromAddress('/account')
+    const result = await getJsonFromAddress('/account')
     const div = document.createElement('div')
-    div.classList.add('input-group')
-    div.classList.add('mb-3')
+    div.classList.add('input-group','mb-3')
     const span = document.createElement('span')
     span.textContent = 'transfer from this account to : '
     span.classList.add('input-group-text')
@@ -21,10 +19,16 @@ export async function getTransferForm(thisId) {
     commentInput.classList.add('form-control')
     const submitButton = document.createElement('button')
     const select = printSelect(thisId, result)
-    submitButton.onclick = () => doTransfer(thisId, result, select.value, amountInput.value, commentInput.value);
+    submitButton.onclick = () => doTransfer(result, select.value, {
+        id: null,
+        from_account_id: thisId,
+        to_account_id: null,
+        amount: amountInput.value,
+        comment: commentInput.value,
+        transfer_date: null
+    });
     submitButton.innerText = 'submit'
-    submitButton.classList.add('btn')
-    submitButton.classList.add('btn-dark')
+    submitButton.classList.add('btn', 'btn-dark')
     div.append(span)
     div.append(document.createElement('br'))
     div.append(amountInput)
@@ -34,21 +38,14 @@ export async function getTransferForm(thisId) {
     return div
 }
 
-async function doTransfer(fromId, array, client_name, amount, comment) {
+async function doTransfer(array, client_name, transfer) {
     let toAccountID
     for (let i = 0; i < array.length; i++) {
         if (client_name == array[i].client_name) {
             toAccountID = array[i].id
         }
     }
-    const transfer = {
-        id: null,
-        from_account_id: fromId,
-        to_account_id: toAccountID,
-        amount: amount,
-        comment: comment,
-        transfer_date: null
-    }
+    transfer.to_account_id = toAccountID
     await postJson(transfer, '/transfer')
     await printFirstPage()
 }
@@ -59,7 +56,7 @@ function printSelect(thisId, array) {
 
     for (let i = 0; i < array.length; i++) {
         if (array[i].id !== thisId) {
-            let option = document.createElement('option')
+            const option = document.createElement('option')
             option.innerText = array[i].client_name
             select.append(option)
         }

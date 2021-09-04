@@ -1,10 +1,9 @@
-import {main, printFirstPage} from "../mainPage.js";
+import {main, printFirstPage} from "../pages/mainPage.js";
 import {postJson} from "../util/ajax.js";
 
 export function createNewAccountForm() {
     const div = document.createElement('div')
-    div.classList.add('input-group')
-    div.classList.add('mb-3')
+    div.classList.add('input-group', 'mb-3')
     const span = document.createElement('span')
     span.classList.add('input-group-text')
     span.textContent = 'Add new account: '
@@ -17,8 +16,7 @@ export function createNewAccountForm() {
     amountInput.placeholder = 'amount'
     amountInput.classList.add('form-control')
     const submitButton = document.createElement('button')
-    submitButton.classList.add('btn')
-    submitButton.classList.add('btn-dark')
+    submitButton.classList.add('btn','btn-dark')
     submitButton.onclick = () => sendNewAccount(nameInput.value, amountInput.value)
     submitButton.innerText = 'submit'
     div.append(document.createElement('br'))
@@ -29,11 +27,11 @@ export function createNewAccountForm() {
     main.append(div)
 }
 
-async function sendNewAccount(name, amount) {
-    let account = {
+async function sendNewAccount(client_name, balance) {
+    const account = {
         id: null,
-        client_name: name,
-        balance: amount
+        client_name,
+        balance
     }
     await postJson(account, '/account')
     await printFirstPage()

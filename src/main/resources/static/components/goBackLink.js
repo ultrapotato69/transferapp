@@ -1,4 +1,4 @@
-import {printFirstPage} from "../mainPage.js";
+import {printFirstPage} from "../pages/mainPage.js";
 
 export function goBackLink() {
     const breadcrumb = document.createElement('div')

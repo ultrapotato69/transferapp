@@ -3,8 +3,7 @@ import {getJsonFromAddress} from "../util/ajax.js";
 export async function getTransferHistory(account, accountList) {
     let transferHistory = await getJsonFromAddress('/transfer/history/' + account.id)
     const table = document.createElement('table')
-    table.classList.add('table')
-    table.classList.add('table-striped')
+    table.classList.add('table','table-striped')
     const caption = document.createElement('caption')
     caption.textContent = 'Transfer history:'
     caption.classList.add('caption-top')
@@ -38,7 +37,6 @@ function getBodyTable(transferHistory, accountList, account) {
         for (let key in transferHistory[i]) {
             if (key !== 'transfer_id') {
                 let td = document.createElement('td')
-
                 if (key === 'from_account_id' || key === 'to_account_id') {
                     console.log(transferHistory[i][key])
                     if (transferHistory[i][key] === 0) {

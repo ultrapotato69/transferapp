@@ -1,10 +1,10 @@
 import {main} from "./mainPage.js";
-import {clearElement} from "./util/util.js";
-import {getJsonFromAddress} from "./util/ajax.js";
-import {getTransferHistory} from "./components/transferHistoryList.js";
-import {infoAndDelete} from "./components/accounInfo.js";
-import {getTransferForm} from "./components/transferForm.js";
-import {goBackLink} from "./components/goBackLink.js";
+import {clearElement} from "../util/util.js";
+import {getJsonFromAddress} from "../util/ajax.js";
+import {getTransferHistory} from "../components/transferHistoryList.js";
+import {infoAndDelete} from "../components/accounInfo.js";
+import {getTransferForm} from "../components/transferForm.js";
+import {goBackLink} from "../components/goBackLink.js";
 
 
 export function getAccount(id, accountList) {
