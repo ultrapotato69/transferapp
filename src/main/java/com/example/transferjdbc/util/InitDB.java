@@ -5,6 +5,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -17,8 +18,8 @@ public class InitDB {
 
 
     @Autowired
-    public InitDB(ConnectionToDb connection) throws SQLException, IOException {
-        this.connection = connection.getConnection();
+    public InitDB(final DataSource dataSource) throws SQLException, IOException {
+        this.connection = dataSource.getConnection();
     }
 
     @EventListener(ApplicationReadyEvent.class)

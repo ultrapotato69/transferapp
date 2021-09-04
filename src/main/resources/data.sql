@@ -1,14 +1,8 @@
 INSERT INTO account(client_name, balance)
-VALUES ('Sergey Lebedev', 500);
-
-INSERT INTO account(client_name, balance)
-VALUES ('Alexandr Smoleev', 300000);
-
-INSERT INTO account(client_name, balance)
-VALUES ('Natalia Korneeva', 12000);
-
-INSERT INTO account(client_name, balance)
-VALUES ('Leonid Terekhov', 6000);
+VALUES ('Sergey Lebedev', 500),
+       ('Alexandr Smoleev', 300000),
+       ('Natalia Korneeva', 12000),
+       ('Leonid Terekhov', 6000);
 
 
 UPDATE account SET balance = balance - 5000 WHERE id = 2;

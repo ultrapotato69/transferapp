@@ -20,7 +20,7 @@ public class AccountService {
     }
 
     public Account findById(Long id) {
-        return accountRepo.findById(id);
+        return accountRepo.findById(id).orElseThrow();
     }
 
     public Account save(Account account) {

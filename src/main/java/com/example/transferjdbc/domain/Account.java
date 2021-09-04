@@ -1,9 +1,15 @@
 package com.example.transferjdbc.domain;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
+@Table("account")
 public class Account {
+
+    @Id
     private Long id;
     private String client_name;
     private BigDecimal balance;
@@ -14,9 +20,7 @@ public class Account {
         this.balance = balance;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     public void setId(Long id) {
         this.id = id;
@@ -34,9 +38,7 @@ public class Account {
         return balance;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
-    }
+    public void setBalance(BigDecimal balance) { this.balance = balance; }
 
     @Override
     public boolean equals(Object o) {

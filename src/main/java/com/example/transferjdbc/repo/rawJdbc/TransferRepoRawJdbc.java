@@ -1,10 +1,13 @@
-package com.example.transferjdbc.repo;
+package com.example.transferjdbc.repo.rawJdbc;
 
 import com.example.transferjdbc.domain.Transfer;
-import com.example.transferjdbc.util.ConnectionToDb;
+//import com.example.transferjdbc.util.ConnectionToDb;
+import com.example.transferjdbc.repo.TransferRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.*;
@@ -13,12 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class TransferRepoRawJDBC implements TransferRepo {
+@Primary
+public class TransferRepoRawJdbc implements TransferRepo {
     private Connection connection;
 
     @Autowired
-    public TransferRepoRawJDBC(ConnectionToDb connection) throws SQLException, IOException {
-        this.connection = connection.getConnection();
+    public TransferRepoRawJdbc(final DataSource dataSource) throws SQLException, IOException {
+        this.connection = dataSource.getConnection();
     }
 
     @Override
@@ -34,27 +38,28 @@ public class TransferRepoRawJDBC implements TransferRepo {
 
 
         BigDecimal balance;
-        BigDecimal postDivide = null;
+
         ResultSet createTransferRs;
         try (
+                PreparedStatement selectForUpdateStatement =
+                        connection.prepareStatement("select id, balance from account where id = ? for update");
                 PreparedStatement subtractStatement =
-                        connection.prepareStatement("select id, balance from account where id = ? for update",
-                                ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+                        connection.prepareStatement("UPDATE account SET balance = balance - ? WHERE id = ?");
                 PreparedStatement addStatement =
                         connection.prepareStatement("UPDATE account SET balance = balance + ? WHERE id = ?");
                 PreparedStatement createTransferStatement =
                         connection.prepareStatement("INSERT INTO transfer(from_account_id, to_account_id, amount, comment, transfer_date) VALUES (? , ?, ?, ?, ?)",
                                 PreparedStatement.RETURN_GENERATED_KEYS);
         ) {
-            subtractStatement.setLong(1, from_account_id);
-            ResultSet selectRs = subtractStatement.executeQuery();
+            selectForUpdateStatement.setLong(1, from_account_id);
+            ResultSet selectRs = selectForUpdateStatement.executeQuery();
             if (selectRs.next()) {
                 balance = selectRs.getBigDecimal("balance");
                 if (balance.compareTo(amount) >= 0) {
                     connection.setAutoCommit(false);
-                    postDivide = balance.subtract(amount);
-                    selectRs.updateBigDecimal("balance", postDivide);
-                    selectRs.updateRow();
+
+                    subtractStatement.setBigDecimal(1, amount);
+                    subtractStatement.setLong(2, from_account_id);
                     subtractStatement.execute();
 
                     addStatement.setBigDecimal(1, amount);
@@ -78,7 +83,6 @@ public class TransferRepoRawJDBC implements TransferRepo {
                     }
                 }
             }
-
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
         } catch (Exception e) {
@@ -90,12 +94,12 @@ public class TransferRepoRawJDBC implements TransferRepo {
     }
 
     @Override
-    public Iterable<Transfer> findById(Long clientId) {
+    public Iterable<Transfer> findAllTransfersById(Long clientId) {
         List<Transfer> transferList = new ArrayList<>();
         try (PreparedStatement statement =
                      connection.prepareStatement(
-                             "select transfer_id, from_account_id, to_account_id, amount, comment, transfer_date from transfer "
-                                     + "where from_account_id = ? or to_account_id = ? order by transfer_id")) {
+                             "select transfer_id, from_account_id, to_account_id, amount, comment, transfer_date " +
+                                     "from transfer where from_account_id = ? or to_account_id = ? order by transfer_id")) {
             statement.setLong(1, clientId);
             statement.setLong(2, clientId);
             ResultSet resultSet = statement.executeQuery();

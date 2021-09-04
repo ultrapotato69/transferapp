@@ -2,7 +2,7 @@ package com.example.transferjdbc.service;
 
 import com.example.transferjdbc.domain.Transfer;
 import com.example.transferjdbc.repo.AccountRepo;
-import com.example.transferjdbc.repo.TransferRepoRawJDBC;
+import com.example.transferjdbc.repo.TransferRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransferService {
 
-    private final TransferRepoRawJDBC transferRepo;
+    private final TransferRepo transferRepo;
 
     @Autowired
-    public TransferService(TransferRepoRawJDBC transferRepo, AccountRepo accountRepo) {
+    public TransferService(TransferRepo transferRepo, AccountRepo accountRepo) {
         this.transferRepo = transferRepo;
     }
 
@@ -22,6 +22,6 @@ public class TransferService {
     }
 
     public Iterable<Transfer> findById(Long clientId) {
-        return transferRepo.findById(clientId);
+        return transferRepo.findAllTransfersById(clientId);
     }
 }
