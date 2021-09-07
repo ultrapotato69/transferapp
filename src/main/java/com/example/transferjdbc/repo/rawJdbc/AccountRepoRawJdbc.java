@@ -1,10 +1,12 @@
-package com.example.transferjdbc.repo;
+package com.example.transferjdbc.repo.rawJdbc;
 
 import com.example.transferjdbc.domain.Account;
-import com.example.transferjdbc.util.ConnectionToDb;
+import com.example.transferjdbc.repo.AccountRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,16 +14,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
-@Repository
-class AccountRepoRawJDBC implements AccountRepo {
+@Repository("accountRepoRawJDBC")
+@Primary
+class AccountRepoRawJdbc implements AccountRepo {
       
     private Connection connection;
 
 
     @Autowired
-    public AccountRepoRawJDBC(ConnectionToDb connection) throws SQLException, IOException {
-        this.connection = connection.getConnection();
+    public AccountRepoRawJdbc(final DataSource dataSource) throws SQLException, IOException {
+        this.connection = dataSource.getConnection();
     }
 
     @Override
@@ -46,7 +51,7 @@ class AccountRepoRawJDBC implements AccountRepo {
     }
 
     @Override
-    public Account findById(Long id) {
+    public Optional<Account> findById(Long id) {
         Account account = null;
         try (PreparedStatement statement =
                      connection.prepareStatement("select id, client_name, balance from account where id = ?")) {
@@ -63,7 +68,7 @@ class AccountRepoRawJDBC implements AccountRepo {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return account;
+        return Optional.ofNullable(account);
     }
 
     @Override
@@ -74,10 +79,11 @@ class AccountRepoRawJDBC implements AccountRepo {
             return this.update(account);
         }
     }
+
     private Account create(Account account) {
         long key = 0;
         try (PreparedStatement statement =
-                     connection.prepareStatement("INSERT INTO account(client_name, balance) VALUES (?, ? ) "
+                     connection.prepareStatement("INSERT INTO account(client_name, balance) VALUES (?, ?) "
                              , PreparedStatement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, account.getClient_name());
             statement.setBigDecimal(2, account.getBalance());
@@ -103,14 +109,17 @@ class AccountRepoRawJDBC implements AccountRepo {
             statement.setBigDecimal(2, account.getBalance());
             int row = statement.executeUpdate();
             if (row > 0) {
-                accountFromDB = this.findById(account.getId());
+                accountFromDB = this.findById(account.getId()).orElseThrow();
             }
         } catch (SQLException e) {
             System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+        } catch(NoSuchElementException e) {
+            System.err.format("Do not find account id %s\n", e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            return accountFromDB;
         }
-        return accountFromDB;
     }
     @Override
     public void deleteById(Long id) {
@@ -123,7 +132,5 @@ class AccountRepoRawJDBC implements AccountRepo {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
 }

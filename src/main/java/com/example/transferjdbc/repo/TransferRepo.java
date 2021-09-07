@@ -4,5 +4,5 @@ import com.example.transferjdbc.domain.Transfer;
 
 public interface TransferRepo {
     Transfer transferMoney(Transfer transfer);
-    Iterable<Transfer> findById(Long clientId);
+    Iterable<Transfer> findAllTransfersById(Long clientId);
 }
