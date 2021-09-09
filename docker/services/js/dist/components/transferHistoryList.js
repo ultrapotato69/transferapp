@@ -38,7 +38,6 @@ function getBodyTable(transferHistory, accountList, account) {
         for (let key in transferHistory[i]) {
             if (key !== 'transfer_id') {
                 let td = document.createElement('td')
-
                 if (key === 'from_account_id' || key === 'to_account_id') {
                     console.log(transferHistory[i][key])
                     if (transferHistory[i][key] === 0) {
@@ -48,7 +47,6 @@ function getBodyTable(transferHistory, accountList, account) {
                     } else {
                         for (let j = 0; j < accountList.length; j++) {
                             if (accountList[j].id === transferHistory[i][key]) {
-                                console.log(accountList[j].id + " " + transferHistory[i][key])
                                 td.innerText = accountList[j].client_name + '  '
                             }
                         }

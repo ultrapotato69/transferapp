@@ -20,6 +20,9 @@ public class Account {
         this.balance = balance;
     }
 
+    public Account() {
+    }
+
     public Long getId() { return id; }
 
     public void setId(Long id) {

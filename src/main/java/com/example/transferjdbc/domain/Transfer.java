@@ -1,5 +1,7 @@
 package com.example.transferjdbc.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,6 +12,7 @@ public class Transfer {
     private Long to_account_id;
     private BigDecimal amount;
     private String comment;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime transfer_date;
 
 
@@ -20,6 +23,9 @@ public class Transfer {
         this.amount = amount;
         this.comment = comment;
         this.transfer_date = transfer_date;
+    }
+
+    public Transfer() {
     }
 
     public String getComment() {

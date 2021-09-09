@@ -1,5 +1,5 @@
 export async function getJsonFromAddress(url) {
-    let response = await fetch(url)
+    let response = await fetch(`http://localhost:8092${url}`)
     if (response.ok) {
         return await response.json()
     } else {
@@ -8,7 +8,7 @@ export async function getJsonFromAddress(url) {
 }
 
 export async function postJson(object, url) {
-    let response = await fetch(url, {
+    let response = await fetch(`http://localhost:8092${url}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -19,7 +19,7 @@ export async function postJson(object, url) {
 }
 
 export async function deleteFromJson(url) {
-    let response = await fetch(url, {
+    let response = await fetch(`http://localhost:8092${url}`, {
         method: 'DELETE',
     })
     return response

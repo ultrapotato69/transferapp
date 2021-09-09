@@ -3,6 +3,7 @@ package com.example.transferjdbc.util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -11,6 +12,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.stream.Collectors;
 
 @Component
 public class InitDB {
@@ -25,21 +27,20 @@ public class InitDB {
     @EventListener(ApplicationReadyEvent.class)
     public void init() throws SQLException {
         try (Statement stat = connection.createStatement();) {
-            readSQLScriptFromFile(stat, "src/main/resources/schema.sql");
+            readSQLScriptFromFile(stat, "schema.sql");
             if (!selectTest(stat)){
-                readSQLScriptFromFile(stat, "src/main/resources/data.sql");
+                readSQLScriptFromFile(stat, "data.sql");
             }
         }
     }
 
-    private void readSQLScriptFromFile(Statement stat, String pathName) {
+    private void readSQLScriptFromFile(Statement stat, String pathName)  {
         String s;
         StringBuffer sb = new StringBuffer();
-        FileReader fr;
         try {
-            fr = new FileReader(pathName);
-
-            BufferedReader br = new BufferedReader(fr);
+            InputStream resource = new ClassPathResource(
+                    pathName).getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(resource));
             while ((s = br.readLine()) != null) {
                 sb.append(s);
             }

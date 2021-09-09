@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    build:
+      context: services/postgres
+      dockerfile: Dockerfile.development
+    ports:
+      - "5435:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=transfer
+      - POSTGRES_PASSWORD=123
+    image: 'transfer-postgres'
+    volumes:
+      - "db-data:/var/lib/postgresql/data"
+
+  java:
+    build:
+      context: services/app
+      dockerfile: Dockerfile.development
+    environment:
+      - PORT=8092
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres/transfer
+      - JS_URL=http://localhost
+    image: 'transfer-java-app'
+    ports:
+      - 8092:8092
+    depends_on:
+      - postgres
+
+  js:
+    build:
+      context: services/js
+      dockerfile: Dockerfile.development
+    image: 'transfer-js-app'
+    ports:
+        - 80:80
+        
+volumes:
+   db-data:
