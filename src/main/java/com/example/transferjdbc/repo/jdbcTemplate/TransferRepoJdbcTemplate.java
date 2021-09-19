@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Repository
-//@Primary
+@Primary
 public class TransferRepoJdbcTemplate implements TransferRepo {
 
     private final JdbcTemplate jdbcTemplate;

@@ -29,6 +29,8 @@ public class InitDB {
             if (!selectTest(stat)){
                 readSQLScriptFromFile(stat, "src/main/resources/data.sql");
             }
+        } finally {
+            connection.close();
         }
     }
 

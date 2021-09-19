@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Repository("accountRepoRawJDBC")
-@Primary
+//@Primary
 class AccountRepoRawJdbc implements AccountRepo {
       
     private Connection connection;

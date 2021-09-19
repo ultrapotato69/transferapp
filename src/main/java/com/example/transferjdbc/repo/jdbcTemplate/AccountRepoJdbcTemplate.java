@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-//@Primary
+@Primary
 public class AccountRepoJdbcTemplate implements AccountRepo {
 
     private JdbcTemplate jdbcTemplate;
